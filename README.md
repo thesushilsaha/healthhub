@@ -1,10 +1,10 @@
 
-# PharmaSpot Point of Sale
-![GitHub package.json version](https://img.shields.io/github/package-json/v/drkNsubuga/PharmaSpot) ![GitHub all releases](https://img.shields.io/github/downloads/drkNsubuga/PharmaSpot/total) [![Build](https://github.com/drkNsubuga/PharmaSpot/actions/workflows/build.yml/badge.svg)](https://github.com/drkNsubuga/PharmaSpot/actions/workflows/build.yml) [![Release](https://github.com/drkNsubuga/PharmaSpot/actions/workflows/release.yml/badge.svg)](https://github.com/drkNsubuga/PharmaSpot/actions/workflows/release.yml) [![GitHub issues](https://img.shields.io/github/issues/drkNsubuga/PharmaSpot)](https://github.com/drkNsubuga/PharmaSpot) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/drkNsubuga/PharmaSpot/blob/main/LICENSE)
+# HealthHub Point of Sale
+![GitHub package.json version](https://img.shields.io/github/package-json/v/drkNsubuga/HealthHub) ![GitHub all releases](https://img.shields.io/github/downloads/drkNsubuga/HealthHub/total) [![Build](https://github.com/drkNsubuga/HealthHub/actions/workflows/build.yml/badge.svg)](https://github.com/drkNsubuga/HealthHub/actions/workflows/build.yml) [![Release](https://github.com/drkNsubuga/HealthHub/actions/workflows/release.yml/badge.svg)](https://github.com/drkNsubuga/HealthHub/actions/workflows/release.yml) [![GitHub issues](https://img.shields.io/github/issues/drkNsubuga/HealthHub)](https://github.com/drkNsubuga/HealthHub) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/drkNsubuga/HealthHub/blob/main/LICENSE)
 
-![PharmaSpot Logo](assets/images/logo.svg)
+![HealthHub Logo](assets/images/logo.svg)
 
-PharmaSpot is a cross-platform Point of Sale system designed for pharmacies and built to streamline operations and enhance customer service.
+HealthHub is a cross-platform Point of Sale system designed for pharmacies and built to streamline operations and enhance customer service.
 
 ## Features
 
@@ -51,17 +51,17 @@ https://github.com/user-attachments/assets/9b066b96-f06c-4b37-8211-58fd1fea5f01
 
 | **Point of Sale** |  **Payment Point** |
 |--|--|
-|<img src="screenshots/pos.png" alt="PharmaSpot Demo - POS" width="80%"/>  |<img src="screenshots/payment.png" alt="PharmaSpot Demo - Payment" width="80%"/>|
+|<img src="screenshots/pos.png" alt="HealthHub Demo - POS" width="80%"/>  |<img src="screenshots/payment.png" alt="HealthHub Demo - Payment" width="80%"/>|
 | **Receipt** |  **Transactions** |
-| <img src="screenshots/receipt.png" alt="PharmaSpot Demo-Receipt" width="80%"/>| <img src="screenshots/transactions.png" alt="PharmaSpot Demo - Transactions" width="80%"/>|
+| <img src="screenshots/receipt.png" alt="HealthHub Demo-Receipt" width="80%"/>| <img src="screenshots/transactions.png" alt="HealthHub Demo - Transactions" width="80%"/>|
 | **Status Alerts** | **More on the Roadmap** |
-|<img src="screenshots/alerts.png" alt="PharmaSpot Demo - Status Alerts" width="80%"/>| <ul><li>Auto Updates</li><li>Back up</li><li>Restore</li><li>Export to excel</li></ul>
+|<img src="screenshots/alerts.png" alt="HealthHub Demo - Status Alerts" width="80%"/>| <ul><li>Auto Updates</li><li>Back up</li><li>Restore</li><li>Export to excel</li></ul>
 
 
 ## Getting Started
-- Download [PharmaSpot](https://github.com/drkNsubuga/PharmaSpot/releases/latest)
+- Download [HealthHub](https://github.com/drkNsubuga/HealthHub/releases/latest)
 - Unzip the package to a location of your choice.
-- Click the ``PharmaSpot`` executable in the folder
+- Click the ``HealthHub`` executable in the folder
 - Login for default user:
 
 	- ``username:`` admin
@@ -79,12 +79,12 @@ https://github.com/user-attachments/assets/9b066b96-f06c-4b37-8211-58fd1fea5f01
 
 Adapted from [tngoman](https://github.com/tngoman/Store-POS).
 
-Feel free to report any issues or suggest enhancements via [GitHub Issues](https://github.com/drkNsubuga/PharmaSpot/issues). 
+Feel free to report any issues or suggest enhancements via [GitHub Issues](https://github.com/drkNsubuga/HealthHub/issues). 
 
 ## Contributing
 
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change. Take a moment to review the [Contributing Guidelines](https://github.com/drkNsubuga/PharmaSpot/blob/main/CONTRIBUTING.md).
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change. Take a moment to review the [Contributing Guidelines](https://github.com/drkNsubuga/HealthHub/blob/main/CONTRIBUTING.md).
 
 ## License
 
-PharmaSpot Point of Sale is licensed under the [MIT License](https://github.com/drkNsubuga/PharmaSpot/blob/main/LICENSE).
+HealthHub Point of Sale is licensed under the [MIT License](https://github.com/drkNsubuga/HealthHub/blob/main/LICENSE).

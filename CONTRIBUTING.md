@@ -1,6 +1,6 @@
-# Contributing to PharmaSpot
+# Contributing to HealthHub
 
-Thank you for considering contributing to PharmaSpot! We welcome your help and appreciate your interest in improving this project.
+Thank you for considering contributing to HealthHub! We welcome your help and appreciate your interest in improving this project.
 
 ## Getting Started
 
@@ -9,14 +9,14 @@ Thank you for considering contributing to PharmaSpot! We welcome your help and a
 
 ## Issues
 
-Before contributing, check the [issue tracker](https://github.com/drkNsubuga/PharmaSpot/issues) for existing issues. If your issue or feature request is not already documented, feel free to open a new issue.
+Before contributing, check the [issue tracker](https://github.com/drkNsubuga/HealthHub/issues) for existing issues. If your issue or feature request is not already documented, feel free to open a new issue.
 
 ## Development Setup
 
 1. Clone your fork of the repository:
    ```bash
-   git clone (https://github.com/drkNsubuga/PharmaSpot.git
-   cd PharmaSpot
+   git clone (https://github.com/drkNsubuga/HealthHub.git
+   cd HealthHub
    ```
 
 2. Install dependencies:

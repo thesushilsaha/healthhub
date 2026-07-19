@@ -15,7 +15,7 @@ const validFileTypes = [
 const maxFileSize = 2097152 //2MB = 2*1024*1024
 const validator = require("validator");
 const moment = require("moment");
-const appName = process.env.APPNAME || "PharmaSpot";
+const appName = process.env.APPNAME || "HealthHub";
 const appData = process.env.APPDATA || path.join(__dirname, "..", "data");
 const { getDatabase } = require("./db");
 

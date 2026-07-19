@@ -1,0 +1,10 @@
+node_modules/
+notes.txt
+TODO
+out/
+coverage/
+*.old*
+*.log
+.env
+.env.*
+!.env.template

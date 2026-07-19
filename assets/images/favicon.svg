@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72" width="72" height="72">
+  <rect width="100%" height="100%" fill="transparent"/>
+  <!-- Health cross symbol -->
+  <path d="M 20 28 L 32 28 L 32 16 L 44 16 L 44 28 L 56 28 L 56 40 L 44 40 L 44 52 L 32 52 L 32 40 L 20 40 Z" fill="#81c868" />
+</svg>

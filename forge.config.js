@@ -43,7 +43,7 @@ module.exports = {
       config: {
         repository: {
           owner: 'drkNsubuga',
-          name: 'PharmaSpot',
+          name: 'HealthHub',
           draft: true,
         },
       },

@@ -26,6 +26,7 @@ function createWindow() {
         width: width,
         height: height,
         frame: true,
+        icon: path.join(__dirname, 'assets', 'images', 'icon.ico'),
         webPreferences: {
             nodeIntegration: true,
             enableRemoteModule: false,

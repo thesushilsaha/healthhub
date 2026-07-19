@@ -6,7 +6,7 @@ const sanitizeFilename = require('sanitize-filename');
 const fs = require("fs");
 const path = require("path");
 const validator = require("validator");
-const appName = process.env.APPNAME || "PharmaSpot";
+const appName = process.env.APPNAME || "HealthHub";
 const appData = process.env.APPDATA || path.join(__dirname, "..", "data");
 const validFileTypes = [
     "image/jpg",

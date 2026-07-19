@@ -87,7 +87,7 @@ function getDatabase(dbName, onInit) {
             ? path.join(__dirname, "..", "tests", "tmp-db")
             : (process.env.APPDATA || path.join(__dirname, "..", "data"));
         
-        const appName = process.env.APPNAME || "PharmaSpot";
+        const appName = process.env.APPNAME || "HealthHub";
         
         const dbPath = path.join(
             appData,
