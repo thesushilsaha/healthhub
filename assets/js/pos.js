@@ -752,6 +752,7 @@ if (auth == undefined) {
 
       $(".loading").show();
 
+      let orderNumber;
       if (holdOrder != 0) {
         orderNumber = holdOrder;
         method = "PUT";
@@ -760,58 +761,128 @@ if (auth == undefined) {
         method = "POST";
       }
 
-      logo = path.join(img_path, validator.unescape(settings.img));
+      let refNumber = $("#refNumber").val();
+      let discount = parseFloat($("#inputDiscount").val()) || 0;
+      let customer = getSelectedCustomerData() || 0;
+      let currentTime = moment().format();
+      let paid = "";
+      let change = "";
+      let type = "";
 
-      receipt = `<div style="font-size: 10px">                            
-        <p style="text-align: center;">
-        ${
-          checkFileExists(logo)
-            ? `<img style='max-width: 50px' src='${logo}' /><br>`
-            : ``
+      if (status === 1 || status === 3) {
+        let paymentVal = parseFloat($("#payment").val()) || 0;
+        if (paymentVal > 0) {
+          paid = paymentVal.toFixed(2);
+          let changeVal = parseFloat($("#change").text()) || 0;
+          change = changeVal.toFixed(2);
+          type = $('.list-group-item.active').data('payment-method') || "Cash";
+
+          payment = `<tr>
+                        <td colspan="4">Paid</td>
+                        <td class="text-right">${validator.unescape(settings.symbol)} ${moneyFormat(
+                          parseFloat(paid).toFixed(2),
+                        )}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">Change</td>
+                        <td class="text-right">${validator.unescape(settings.symbol)} ${moneyFormat(
+                          parseFloat(change).toFixed(2),
+                        )}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">Method</td>
+                        <td class="text-right">${type}</td>
+                    </tr>`;
         }
-            <span style="font-size: 22px;">${validator.unescape(settings.store)}</span> <br>
-            ${validator.unescape(settings.address_one)} <br>
-            ${validator.unescape(settings.address_two)} <br>
-            ${
-              validator.unescape(settings.contact) != "" ? "Tel: " + validator.unescape(settings.contact) + "<br>" : ""
-            } 
-            ${validator.unescape(settings.tax) != "" ? "Vat No: " + validator.unescape(settings.tax) + "<br>" : ""} 
-        </p>
-        <hr>
-        <left>
-            <p>
-            Order No : ${orderNumber} <br>
-            Ref No : ${refNumber == "" ? orderNumber : _.escape(refNumber)} <br>
-            Customer : ${
-              customer == 0 ? "Walk in customer" : _.escape(customer.name)
-            } <br>
-            Cashier : ${user.fullname} <br>
-            Date : ${date}<br>
-            </p>
+      }
 
-        </left>
-        <hr>
-        <table width="90%">
+      $.each(cart, function (index, item) {
+        let gst = parseFloat(item.gst || 0);
+        let hsn = item.hsnCode || "N/A";
+        items += `<tr>
+                    <td style="text-align: left; padding: 2px 0;">${item.product_name}</td>
+                    <td style="text-align: left; padding: 2px 0;">${hsn}</td>
+                    <td style="text-align: left; padding: 2px 0;">${gst}%</td>
+                    <td style="text-align: center; padding: 2px 0;">${item.quantity}</td>
+                    <td style="text-align: right; padding: 2px 0;">${validator.unescape(settings.symbol)} ${moneyFormat(
+                      Math.abs(item.price).toFixed(2),
+                    )}</td>
+                  </tr>`;
+      });
+
+      let tax_row = "";
+      if (settings.charge_tax) {
+        let halfTax = parseFloat(totalVat / 2).toFixed(2);
+        tax_row = `<tr>
+                    <td colspan="4">CGST</td>
+                    <td class="text-right">${validator.unescape(settings.symbol)} ${moneyFormat(halfTax)}</td>
+                </tr>
+                <tr>
+                    <td colspan="4">SGST</td>
+                    <td class="text-right">${validator.unescape(settings.symbol)} ${moneyFormat(halfTax)}</td>
+                </tr>`;
+      }
+
+      let logo = path.join(img_path, validator.unescape(settings.img));
+      let date = moment().format('DD-MMM-YYYY HH:mm:ss');
+
+      receipt = `<div style="font-size: 10px; font-family: Arial, sans-serif; padding: 10px;">
+        <!-- Flex Container for Left Logo/Store Info & Right Invoice Info -->
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 90%; margin: 0 auto; padding-bottom: 5px;">
+            <!-- Left Column: Logo & Store details -->
+            <div style="display: flex; align-items: center; gap: 8px;">
+                ${
+                  checkFileExists(logo)
+                    ? `<img style="max-height: 40px; max-width: 40px;" src="${logo}" />`
+                    : ``
+                }
+                <div style="line-height: 1.2;">
+                    <span style="font-size: 14px; font-weight: bold;">${validator.unescape(settings.store)}</span><br>
+                    <span style="font-size: 8px; color: #555;">
+                        ${validator.unescape(settings.address_one)}<br>
+                        ${validator.unescape(settings.address_two)}<br>
+                        ${
+                          validator.unescape(settings.contact) != "" ? "Tel: " + validator.unescape(settings.contact) + "<br>" : ""
+                        }
+                        ${
+                          validator.unescape(settings.tax) != "" ? "GSTIN: " + validator.unescape(settings.tax) + "<br>" : ""
+                        }
+                    </span>
+                </div>
+            </div>
+            <!-- Right Column: Invoice metadata details -->
+            <div style="font-size: 8px; text-align: right; line-height: 1.3;">
+                <b>Invoice No:</b> ${orderNumber}<br>
+                <b>Ref No:</b> ${refNumber == "" ? orderNumber : _.escape(refNumber)}<br>
+                <b>Customer:</b> ${
+                  customer == 0 ? "Walk in customer" : _.escape(customer.name)
+                }<br>
+                <b>Cashier:</b> ${user.fullname}<br>
+                <b>Date:</b> ${date}<br>
+            </div>
+        </div>
+        <hr style="border-top: 1px dashed #ccc; margin: 5px 0;">
+        <table width="90%" style="border-collapse: collapse; margin: 0 auto; font-size: 9px;">
             <thead>
-            <tr>
-                <th>Item</th>
-                <th>Qty</th>
-                <th class="text-right">Price</th>
+            <tr style="border-bottom: 1px solid #000;">
+                <th style="text-align: left; width: 45%;">Item</th>
+                <th style="text-align: left; width: 15%;">HSN</th>
+                <th style="text-align: left; width: 10%;">GST</th>
+                <th style="text-align: center; width: 10%;">Qty</th>
+                <th style="text-align: right; width: 20%;">Price</th>
             </tr>
             </thead>
             <tbody>
              ${items}                
-            <tr><td colspan="3"><hr></td></tr>
+            <tr><td colspan="5"><hr style="border-top: 1px dashed #ccc; margin: 5px 0;"></td></tr>
             <tr>                        
-                <td><b>Subtotal</b></td>
-                <td>:</td>
+                <td colspan="4"><b>Subtotal</b></td>
                 <td class="text-right"><b>${validator.unescape(settings.symbol)} ${moneyFormat(
                   subTotal.toFixed(2),
                 )}</b></td>
             </tr>
             <tr>
-                <td>Discount</td>
-                <td>:</td>
+                <td colspan="4">Discount</td>
                 <td class="text-right">${
                   discount > 0
                     ? validator.unescape(settings.symbol) + " " +
@@ -821,8 +892,7 @@ if (auth == undefined) {
             </tr>
             ${tax_row}
             <tr>
-                <td><h5>Total</h5></td>
-                <td><h5>:</h5></td>
+                <td colspan="4"><h5>Total</h5></td>
                 <td class="text-right">
                     <h5>${validator.unescape(settings.symbol)} ${moneyFormat(
                       parseFloat(orderTotal).toFixed(2),
@@ -833,9 +903,9 @@ if (auth == undefined) {
             </tbody>
             </table>
             <br>
-            <hr>
+            <hr style="border-top: 1px dashed #ccc; margin: 5px 0;">
             <br>
-            <p style="text-align: center;">
+            <p style="text-align: center; font-size: 8px;">
              ${validator.unescape(settings.footer)}
              </p>
             </div>`;
@@ -1382,10 +1452,12 @@ if (auth == undefined) {
         },
         //error for product
        error: function (jqXHR,textStatus, errorThrown) {
-      console.error(jqXHR.responseJSON.message);
+      let errorMsg = jqXHR.responseJSON && jqXHR.responseJSON.message ? jqXHR.responseJSON.message : "An error occurred";
+      let errorTitle = jqXHR.responseJSON && jqXHR.responseJSON.error ? jqXHR.responseJSON.error : "Error";
+      console.error(errorMsg);
       notiflix.Report.failure(
-        jqXHR.responseJSON.error,
-        jqXHR.responseJSON.message,
+        errorTitle,
+        errorMsg,
         "Ok",
       );
       }
@@ -1773,7 +1845,7 @@ if (auth == undefined) {
             <br><small style="font-size: 10px; color: #555;">HSN: ${product.hsnCode || "N/A"}</small>
             <span style="display:none;">${product.hsnCode || ""} ${product.genericName || ""}</span>
             ${product.expiryAlert}</td>
-            <td>${validator.unescape(settings.symbol)}${product.price}</td>
+            <td>${settings && settings.symbol ? validator.unescape(settings.symbol) : ""}${product.price}</td>
             <td>${product.gst || 0}%</td>
             <td>${product.stock == 1 ? product.quantity : "N/A"}
             ${product.stockAlert}
@@ -1915,10 +1987,12 @@ if (auth == undefined) {
             ipcRenderer.send("app-reload", "");
           },
           error: function (jqXHR) {
-            console.error(jqXHR.responseJSON.message);
+            let errorMsg = jqXHR.responseJSON && jqXHR.responseJSON.message ? jqXHR.responseJSON.message : "An error occurred";
+            let errorTitle = jqXHR.responseJSON && jqXHR.responseJSON.error ? jqXHR.responseJSON.error : "Error";
+            console.error(errorMsg);
             notiflix.Report.failure(
-              jqXHR.responseJSON.error,
-              jqXHR.responseJSON.message,
+              errorTitle,
+              errorMsg,
               "Ok",
             );
       }
@@ -1984,9 +2058,11 @@ if (auth == undefined) {
             }
           },
           error: function (jqXHR,textStatus, errorThrown) {
+            let errorMsg = jqXHR.responseJSON && jqXHR.responseJSON.message ? jqXHR.responseJSON.message : "An error occurred";
+            let errorTitle = jqXHR.responseJSON && jqXHR.responseJSON.error ? jqXHR.responseJSON.error : "Error";
             notiflix.Report.failure(
-              jqXHR.responseJSON.error,
-              jqXHR.responseJSON.message,
+              errorTitle,
+              errorMsg,
               "Ok",
             );
           },
@@ -2338,10 +2414,10 @@ $.fn.viewTransaction = function (index) {
   transaction_index = index;
 
   let discount = allTransactions[index].discount;
-  let customer =
+  let customerName =
     allTransactions[index].customer == 0
       ? "Walk in Customer"
-      : allTransactions[index].customer.username;
+      : (allTransactions[index].customer.name || allTransactions[index].customer.username || "Walk in Customer");
   let refNumber =
     allTransactions[index].ref_number != ""
       ? allTransactions[index].ref_number
@@ -2356,12 +2432,11 @@ $.fn.viewTransaction = function (index) {
     let hsn = item.hsnCode || "N/A";
     let gst = item.gst || 0;
     items += `<tr>
-                <td>
-                  ${item.product_name}<br>
-                  <small style="font-size: 8px; color: #555;">HSN: ${hsn} | GST: ${gst}%</small>
-                </td>
-                <td>${item.quantity}</td>
-                <td class="text-right">${validator.unescape(settings.symbol)} ${moneyFormat(
+                <td style="text-align: left; padding: 2px 0;">${item.product_name}</td>
+                <td style="text-align: left; padding: 2px 0;">${hsn}</td>
+                <td style="text-align: left; padding: 2px 0;">${gst}%</td>
+                <td style="text-align: center; padding: 2px 0;">${item.quantity}</td>
+                <td style="text-align: right; padding: 2px 0;">${validator.unescape(settings.symbol)} ${moneyFormat(
                   Math.abs(item.price).toFixed(2),
                 )}</td>
               </tr>`;
@@ -2372,22 +2447,19 @@ $.fn.viewTransaction = function (index) {
 
   if (allTransactions[index].paid != "") {
     payment = `<tr>
-                    <td>Paid</td>
-                    <td>:</td>
+                    <td colspan="4">Paid</td>
                     <td class="text-right">${validator.unescape(settings.symbol)} ${moneyFormat(
                       Math.abs(allTransactions[index].paid).toFixed(2),
                     )}</td>
                 </tr>
                 <tr>
-                    <td>Change</td>
-                    <td>:</td>
+                    <td colspan="4">Change</td>
                     <td class="text-right">${validator.unescape(settings.symbol)} ${moneyFormat(
                       Math.abs(allTransactions[index].change).toFixed(2),
                     )}</td>
                 </tr>
                 <tr>
-                    <td>Method</td>
-                    <td>:</td>
+                    <td colspan="4">Method</td>
                     <td class="text-right">${paymentMethod}</td>
                 </tr>`;
   }
@@ -2395,104 +2467,102 @@ $.fn.viewTransaction = function (index) {
   if (settings.charge_tax) {
     let halfTax = parseFloat(allTransactions[index].tax / 2).toFixed(2);
     tax_row = `<tr>
-                <td>CGST</td>
-                <td>:</td>
+                <td colspan="4">CGST</td>
                 <td class="text-right">${validator.unescape(settings.symbol)} ${halfTax}</td>
             </tr>
             <tr>
-                <td>SGST</td>
-                <td>:</td>
+                <td colspan="4">SGST</td>
                 <td class="text-right">${validator.unescape(settings.symbol)} ${halfTax}</td>
             </tr>`;
   }
 
     logo = path.join(img_path, validator.unescape(settings.img));
       
-      receipt = `<div style="font-size: 10px">                            
-        <p style="text-align: center;">
-        ${
-          checkFileExists(logo)
-            ? `<img style='max-width: 50px' src='${logo}' /><br>`
-            : ``
-        }
-            <span style="font-size: 22px;">${validator.unescape(settings.store)}</span> <br>
-            ${validator.unescape(settings.address_one)} <br>
-            ${validator.unescape(settings.address_two)} <br>
-            ${
-              validator.unescape(settings.contact) != "" ? "Tel: " + validator.unescape(settings.contact) + "<br>" : ""
-            } 
-            ${validator.unescape(settings.tax) != "" ? "Vat No: " + validator.unescape(settings.tax) + "<br>" : ""} 
-    </p>
-    <hr>
-    <left>
-        <p>
-        Invoice : ${orderNumber} <br>
-        Ref No : ${refNumber} <br>
-        Customer : ${
-          allTransactions[index].customer == 0
-            ? "Walk in Customer"
-            : allTransactions[index].customer.name
-        } <br>
-        Cashier : ${allTransactions[index].user} <br>
-        Date : ${moment(allTransactions[index].date).format(
-          "DD MMM YYYY HH:mm:ss",
-        )}<br>
-        </p>
-
-    </left>
-    <hr>
-    <table width="90%">
-        <thead>
-        <tr>
-            <th>Item</th>
-            <th>Qty</th>
-            <th class="text-right">Price</th>
-        </tr>
-        </thead>
-        <tbody>
-        ${items}                
-        <tr><td colspan="3"><hr></td></tr>
-        <tr>                        
-            <td><b>Subtotal</b></td>
-            <td>:</td>
-            <td class="text-right"><b>${validator.unescape(settings.symbol)} ${moneyFormat(
-              allTransactions[index].subtotal,
-            )}</b></td>
-        </tr>
-        <tr>
-            <td>Discount</td>
-            <td>:</td>
-            <td class="text-right">${
-              discount > 0
-                ? validator.unescape(settings.symbol) + " " +
-                  moneyFormat(
-                    parseFloat(allTransactions[index].discount).toFixed(2),
-                  )
-                : ""
-            }</td>
-        </tr>
+      receipt = `<div style="font-size: 10px; font-family: Arial, sans-serif; padding: 10px;">
+        <!-- Flex Container for Left Logo/Store Info & Right Invoice Info -->
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 90%; margin: 0 auto; padding-bottom: 5px;">
+            <!-- Left Column: Logo & Store details -->
+            <div style="display: flex; align-items: center; gap: 8px;">
+                ${
+                  checkFileExists(logo)
+                    ? `<img style="max-height: 40px; max-width: 40px;" src="${logo}" />`
+                    : ``
+                }
+                <div style="line-height: 1.2;">
+                    <span style="font-size: 14px; font-weight: bold;">${validator.unescape(settings.store)}</span><br>
+                    <span style="font-size: 8px; color: #555;">
+                        ${validator.unescape(settings.address_one)}<br>
+                        ${validator.unescape(settings.address_two)}<br>
+                        ${
+                          validator.unescape(settings.contact) != "" ? "Tel: " + validator.unescape(settings.contact) + "<br>" : ""
+                        }
+                        ${
+                          validator.unescape(settings.tax) != "" ? "GSTIN: " + validator.unescape(settings.tax) + "<br>" : ""
+                        }
+                    </span>
+                </div>
+            </div>
+            <!-- Right Column: Invoice metadata details -->
+            <div style="font-size: 8px; text-align: right; line-height: 1.3;">
+                <b>Invoice No:</b> ${orderNumber}<br>
+                <b>Ref No:</b> ${refNumber}<br>
+                <b>Customer:</b> ${customerName}<br>
+                <b>Cashier:</b> ${allTransactions[index].user}<br>
+                <b>Date:</b> ${moment(allTransactions[index].date).format("DD MMM YYYY HH:mm:ss")}<br>
+            </div>
+        </div>
+        <hr style="border-top: 1px dashed #ccc; margin: 5px 0;">
+        <table width="90%" style="border-collapse: collapse; margin: 0 auto; font-size: 9px;">
+            <thead>
+            <tr style="border-bottom: 1px solid #000;">
+                <th style="text-align: left; width: 45%;">Item</th>
+                <th style="text-align: left; width: 15%;">HSN</th>
+                <th style="text-align: left; width: 10%;">GST</th>
+                <th style="text-align: center; width: 10%;">Qty</th>
+                <th style="text-align: right; width: 20%;">Price</th>
+            </tr>
+            </thead>
+            <tbody>
+            ${items}                
+            <tr><td colspan="5"><hr style="border-top: 1px dashed #ccc; margin: 5px 0;"></td></tr>
+            <tr>                        
+                <td colspan="4"><b>Subtotal</b></td>
+                <td class="text-right"><b>${validator.unescape(settings.symbol)} ${moneyFormat(
+                  allTransactions[index].subtotal,
+                )}</b></td>
+            </tr>
+            <tr>
+                <td colspan="4">Discount</td>
+                <td class="text-right">${
+                  discount > 0
+                    ? validator.unescape(settings.symbol) + " " +
+                      moneyFormat(
+                        parseFloat(allTransactions[index].discount).toFixed(2),
+                      )
+                    : ""
+                }</td>
+            </tr>
+            
+            ${tax_row}
         
-        ${tax_row}
-    
-        <tr>
-            <td><h5>Total</h5></td>
-            <td><h5>:</h5></td>
-            <td class="text-right">
-                <h5>${validator.unescape(settings.symbol)} ${moneyFormat(
-                  allTransactions[index].total,
-                )}</h5>
-            </td>
-        </tr>
-        ${payment == 0 ? "" : payment}
-        </tbody>
-        </table>
-        <br>
-        <hr>
-        <br>
-        <p style="text-align: center;">
-         ${validator.unescape(settings.footer)}
-         </p>
-        </div>`;
+            <tr>
+                <td colspan="4"><h5>Total</h5></td>
+                <td class="text-right">
+                    <h5>${validator.unescape(settings.symbol)} ${moneyFormat(
+                      allTransactions[index].total,
+                    )}</h5>
+                </td>
+            </tr>
+            ${payment == 0 ? "" : payment}
+            </tbody>
+            </table>
+            <br>
+            <hr style="border-top: 1px dashed #ccc; margin: 5px 0;">
+            <br>
+            <p style="text-align: center; font-size: 8px;">
+             ${validator.unescape(settings.footer)}
+             </p>
+            </div>`;
 
         //prevent DOM XSS; allow windows paths in img src
         receipt = DOMPurify.sanitize(receipt,{ ALLOW_UNKNOWN_PROTOCOLS: true });

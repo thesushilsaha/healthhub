@@ -99,7 +99,8 @@
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
-    "test": "jest"
+    "test": "jest",
+    "lint": "eslint ."
   },
   "browserslist": {
     "production": [
@@ -129,6 +130,7 @@
     "electron-log": "^4.4.8",
     "electron-reloader": "^1.2.3",
     "electron-updater-yaml": "^1.1.2",
+    "eslint": "^10.7.0",
     "gulp": "^5.0.1",
     "gulp-clean-css": "^4.3.0",
     "gulp-concat": "^2.6.1",

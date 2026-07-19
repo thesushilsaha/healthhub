@@ -208,7 +208,9 @@ router.post("/new", function (req, res) {
       } else {
         res.sendStatus(200);
 
-        if (newTransaction.paid >= newTransaction.total) {
+        let isPaid = parseInt(newTransaction.status) === 1 || 
+                     (newTransaction.paid && parseFloat(newTransaction.paid) >= parseFloat(newTransaction.total));
+        if (isPaid) {
           Inventory.decrementInventory(newTransaction.items);
         }
       }
@@ -225,24 +227,47 @@ router.post("/new", function (req, res) {
  */
 router.put("/new", function (req, res) {
   let oderId = req.body._id;
-  transactionsDB.update(
-    {
-      _id: oderId,
-    },
-    req.body,
-    {},
-    function (err, numReplaced, order) {
-      if (err) {
-        console.error(err);
-        res.status(500).json({
-          error: "Internal Server Error",
-          message: "An unexpected error occurred.",
-        });
-      } else {
-        res.sendStatus(200);
-      }
-    },
-  );
+  transactionsDB.findOne({ _id: oderId }, function (findErr, existingTransaction) {
+    if (findErr) {
+      console.error(findErr);
+      return res.status(500).json({
+        error: "Internal Server Error",
+        message: "An unexpected error occurred.",
+      });
+    }
+
+    let wasPaid = false;
+    if (existingTransaction) {
+      wasPaid = parseInt(existingTransaction.status) === 1 || 
+                (existingTransaction.paid && parseFloat(existingTransaction.paid) >= parseFloat(existingTransaction.total));
+    }
+
+    transactionsDB.update(
+      {
+        _id: oderId,
+      },
+      req.body,
+      {},
+      function (err, numReplaced, order) {
+        if (err) {
+          console.error(err);
+          res.status(500).json({
+            error: "Internal Server Error",
+            message: "An unexpected error occurred.",
+          });
+        } else {
+          res.sendStatus(200);
+
+          let isPaid = parseInt(req.body.status) === 1 || 
+                       (req.body.paid && parseFloat(req.body.paid) >= parseFloat(req.body.total));
+                       
+          if (isPaid && !wasPaid) {
+            Inventory.decrementInventory(req.body.items);
+          }
+        }
+      },
+    );
+  });
 });
 
 /**
