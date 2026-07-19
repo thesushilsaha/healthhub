@@ -36,7 +36,7 @@ router.get("/customer/:customerId", function (req, res) {
     } else {
         customerDB.findOne(
             {
-                _id: req.params.customerId,
+                _id: parseInt(req.params.customerId),
             },
             function (err, customer) {
                 res.send(customer);
@@ -90,7 +90,7 @@ router.post("/customer", function (req, res) {
 router.delete("/customer/:customerId", function (req, res) {
     customerDB.remove(
         {
-            _id: req.params.customerId,
+            _id: parseInt(req.params.customerId),
         },
         function (err, numRemoved) {
             if (err) {

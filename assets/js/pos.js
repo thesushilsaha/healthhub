@@ -1076,7 +1076,7 @@ if (auth == undefined) {
 
     $.fn.calculatePrice = function (data) {
       totalPrice = 0;
-      $.each(data.products, function (index, product) {
+      $.each(data.items, function (index, product) {
         totalPrice += product.price * product.quantity;
       });
 

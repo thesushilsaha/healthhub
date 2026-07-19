@@ -62,10 +62,19 @@ router.get("/on-hold", function (req, res) {
  * @returns {void}
  */
 router.get("/customer-orders", function (req, res) {
+  let query = { $and: [{ customer: { $ne: "0" } }, { status: 0 }] };
+  if (process.env.DB_STRATEGY !== "sql") {
+    query.$and.unshift({ customer: { $ne: 0 } });
+  }
+
   transactionsDB.find(
-    { $and: [{ customer: { $ne: 0 } }, { customer: { $ne: "0" } }, { status: 0 }] },
+    query,
     function (err, docs) {
-      if (docs) res.send(docs);
+      if (err) {
+        console.error(err);
+        return res.status(500).send(err);
+      }
+      res.send(docs || []);
     },
   );
 });
@@ -305,7 +314,7 @@ router.post("/delete", function (req, res) {
  * @returns {void}
  */
 router.get("/:transactionId", function (req, res) {
-  transactionsDB.find({ _id: req.params.transactionId }, function (err, doc) {
+  transactionsDB.find({ _id: parseInt(req.params.transactionId) }, function (err, doc) {
     if (doc) res.send(doc[0]);
   });
 });
