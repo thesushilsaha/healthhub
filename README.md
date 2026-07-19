@@ -1,6 +1,6 @@
 
 # HealthHub Point of Sale
-![GitHub package.json version](https://img.shields.io/github/package-json/v/drkNsubuga/HealthHub) ![GitHub all releases](https://img.shields.io/github/downloads/drkNsubuga/HealthHub/total) [![Build](https://github.com/drkNsubuga/HealthHub/actions/workflows/build.yml/badge.svg)](https://github.com/drkNsubuga/HealthHub/actions/workflows/build.yml) [![Release](https://github.com/drkNsubuga/HealthHub/actions/workflows/release.yml/badge.svg)](https://github.com/drkNsubuga/HealthHub/actions/workflows/release.yml) [![GitHub issues](https://img.shields.io/github/issues/drkNsubuga/HealthHub)](https://github.com/drkNsubuga/HealthHub) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/drkNsubuga/HealthHub/blob/main/LICENSE)
+![GitHub package.json version](https://img.shields.io/github/package-json/v/thesushilsaha/healthhub) ![GitHub all releases](https://img.shields.io/github/downloads/thesushilsaha/healthhub/total) [![Build](https://github.com/thesushilsaha/healthhub/actions/workflows/build.yml/badge.svg)](https://github.com/thesushilsaha/healthhub/actions/workflows/build.yml) [![Release](https://github.com/thesushilsaha/healthhub/actions/workflows/release.yml/badge.svg)](https://github.com/thesushilsaha/healthhub/actions/workflows/release.yml) [![GitHub issues](https://img.shields.io/github/issues/thesushilsaha/healthhub)](https://github.com/thesushilsaha/healthhub) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/thesushilsaha/healthhub/blob/main/LICENSE)
 
 ![HealthHub Logo](assets/images/logo.svg)
 
@@ -59,7 +59,7 @@ https://github.com/user-attachments/assets/9b066b96-f06c-4b37-8211-58fd1fea5f01
 
 
 ## Getting Started
-- Download [HealthHub](https://github.com/drkNsubuga/HealthHub/releases/latest)
+- Download [HealthHub](https://github.com/thesushilsaha/healthhub/releases/latest)
 - Unzip the package to a location of your choice.
 - Click the ``HealthHub`` executable in the folder
 - Login for default user:
@@ -79,12 +79,12 @@ https://github.com/user-attachments/assets/9b066b96-f06c-4b37-8211-58fd1fea5f01
 
 Adapted from [tngoman](https://github.com/tngoman/Store-POS).
 
-Feel free to report any issues or suggest enhancements via [GitHub Issues](https://github.com/drkNsubuga/HealthHub/issues). 
+Feel free to report any issues or suggest enhancements via [GitHub Issues](https://github.com/thesushilsaha/healthhub/issues). 
 
 ## Contributing
 
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change. Take a moment to review the [Contributing Guidelines](https://github.com/drkNsubuga/HealthHub/blob/main/CONTRIBUTING.md).
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change. Take a moment to review the [Contributing Guidelines](https://github.com/thesushilsaha/healthhub/blob/main/CONTRIBUTING.md).
 
 ## License
 
-HealthHub Point of Sale is licensed under the [MIT License](https://github.com/drkNsubuga/HealthHub/blob/main/LICENSE).
+HealthHub Point of Sale is licensed under the [MIT License](https://github.com/thesushilsaha/healthhub/blob/main/LICENSE).

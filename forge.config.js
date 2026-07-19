@@ -22,19 +22,19 @@ module.exports = {
     // Generic zip archive
     { name: '@electron-forge/maker-zip' },
 
-  // Windows
-  { name: '@electron-forge/maker-squirrel', config: {} },
-  { name: '@electron-forge/maker-wix', config: { language: 1033, manufacturer: pkg.author} },
-  // { name: '@electron-forge/maker-appx', config: {} },
+    // Windows
+    { name: '@electron-forge/maker-squirrel', config: {} },
+    { name: '@electron-forge/maker-wix', config: { language: 1033, manufacturer: pkg.author } },
+    // { name: '@electron-forge/maker-appx', config: {} },
 
-  // Linux
-  { name: '@electron-forge/maker-deb', config: {} },
-  { name: '@electron-forge/maker-rpm', config: {} },
-  // { name: '@electron-forge/maker-snap', config: {} },
+    // Linux
+    { name: '@electron-forge/maker-deb', config: {} },
+    { name: '@electron-forge/maker-rpm', config: {} },
+    // { name: '@electron-forge/maker-snap', config: {} },
 
-  // macOS
-  { name: '@electron-forge/maker-dmg', config: { format: 'ULFO' } },
-  // { name: '@electron-forge/maker-pkg', config: {} }
+    // macOS
+    { name: '@electron-forge/maker-dmg', config: { format: 'ULFO' } },
+    // { name: '@electron-forge/maker-pkg', config: {} }
   ],
 
   publishers: [
@@ -42,7 +42,7 @@ module.exports = {
       name: '@electron-forge/publisher-github',
       config: {
         repository: {
-          owner: 'drkNsubuga',
+          owner: 'Neo',
           name: 'HealthHub',
           draft: true,
         },
