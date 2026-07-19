@@ -571,7 +571,13 @@ if (auth == undefined) {
         $("#cartTable .card-body").append(
           $("<div>", { class: "row m-t-10" }).append(
             $("<div>", { class: "col-md-1", text: index + 1 }),
-            $("<div>", { class: "col-md-3", text: data.product_name }),
+            $("<div>", { class: "col-md-3" }).append(
+              $("<span>", { text: data.product_name, style: "font-weight: bold; display: block;" }),
+              $("<small>", {
+                text: "HSN: " + (data.hsnCode || "N/A") + " | GST: " + (data.gst || 0) + "%",
+                style: "color: #777; font-size: 10px;"
+              })
+            ),
             $("<div>", { class: "col-md-3" }).append(
               $("<div>", { class: "input-group" }).append(
                 $("<span>", { class: "input-group-btn" }).append(
@@ -642,8 +648,8 @@ if (auth == undefined) {
     };
 
     $.fn.qtDecrement = function (i) {
+      item = cart[i];
       if (item.quantity > 1) {
-        item = cart[i];
         item.quantity = parseInt(item.quantity) - 1;
         $(this).renderTable(cart);
       }
@@ -719,100 +725,18 @@ if (auth == undefined) {
       notiflix.Report.success("Done", "print job complete", "Ok");
     }
 
+    function isSchedulePrescription(st) {
+      if (!st) return false;
+      const s = String(st).toUpperCase().trim();
+      return s === 'H' || s === 'H1' || s === 'X' || s.includes('SCHEDULE H') || s.includes('SCHEDULE H1') || s.includes('SCHEDULE X');
+    }
+
     $.fn.submitDueOrder = function (status) {
       let items = "";
       let payment = 0;
       paymentType = $('.list-group-item.active').data('payment-type');
-      cart.forEach((item) => {
-        let hsn = item.hsnCode || "N/A";
-        let gst = item.gst || 0;
-        items += `<tr>
-                    <td>
-                      ${DOMPurify.sanitize(item.product_name)}<br>
-                      <small style="font-size: 8px; color: #555;">HSN: ${DOMPurify.sanitize(hsn)} | GST: ${DOMPurify.sanitize(gst)}%</small>
-                    </td>
-                    <td>${DOMPurify.sanitize(item.quantity)}</td>
-                    <td class="text-right">${DOMPurify.sanitize(validator.unescape(settings.symbol))} ${moneyFormat(
-                      DOMPurify.sanitize(Math.abs(item.price).toFixed(2)),
-                    )}</td>
-                  </tr>`;
-      });
 
-      let currentTime = new Date(moment());
-      let discount = $("#inputDiscount").val();
-      let customer = JSON.parse($("#customer").val());
-      let date = moment(currentTime).format("YYYY-MM-DD HH:mm:ss");
-      let paymentAmount = $("#payment").val().replace(",", "");
-      let changeAmount = $("#change").text().replace(",", "");
-      let paid =
-        $("#payment").val() == "" ? "" : parseFloat(paymentAmount).toFixed(2);
-      let change =
-        $("#change").text() == "" ? "" : parseFloat(changeAmount).toFixed(2);
-      let refNumber = $("#refNumber").val();
-      let orderNumber = holdOrder;
-      let type = "";
-      let tax_row = "";
-      switch (paymentType) {
-        case 1:
-          type = "Cash";
-          break;
-        case 3:
-          type = "Card";
-          break;
-      }
-
-      if (paid != "") {
-        payment = `<tr>
-                        <td>Paid</td>
-                        <td>:</td>
-                        <td class="text-right">${validator.unescape(settings.symbol)} ${moneyFormat(
-                          Math.abs(paid).toFixed(2),
-                        )}</td>
-                    </tr>
-                    <tr>
-                        <td>Change</td>
-                        <td>:</td>
-                        <td class="text-right">${validator.unescape(settings.symbol)} ${moneyFormat(
-                          Math.abs(change).toFixed(2),
-                        )}</td>
-                    </tr>
-                    <tr>
-                        <td>Method</td>
-                        <td>:</td>
-                        <td class="text-right">${type}</td>
-                    </tr>`;
-      }
-
-      if (settings.charge_tax) {
-        let halfVat = parseFloat(totalVat / 2).toFixed(2);
-        tax_row = `<tr>
-                    <td>CGST</td>
-                    <td>:</td>
-                    <td class="text-right">${validator.unescape(settings.symbol)} ${moneyFormat(
-                      halfVat,
-                    )}</td>
-                </tr>
-                <tr>
-                    <td>SGST</td>
-                    <td>:</td>
-                    <td class="text-right">${validator.unescape(settings.symbol)} ${moneyFormat(
-                      halfVat,
-                    )}</td>
-                </tr>`;
-      }
-
-      if (status == 0) {
-        if ($("#customer").val() == 0 && $("#refNumber").val() == "") {
-          notiflix.Report.warning(
-            "Reference Required!",
-            "You either need to select a customer <br> or enter a reference!",
-            "Ok",
-          );
-          return;
-        }
-      }
-
-      let requiresPrescription = cart.some(item => item.scheduleType === 'H' || item.scheduleType === 'H1');
+      let requiresPrescription = cart.some(item => isSchedulePrescription(item.scheduleType));
       if (requiresPrescription && status === 1) {
         let patient = $("#prescriptionPatient").val();
         let prescriber = $("#prescriptionPrescriber").val();
@@ -902,7 +826,7 @@ if (auth == undefined) {
                 <td class="text-right">
                     <h5>${validator.unescape(settings.symbol)} ${moneyFormat(
                       parseFloat(orderTotal).toFixed(2),
-                    )}</h3>
+                    )}</h5>
                 </td>
             </tr>
             ${payment == 0 ? "" : payment}
@@ -1354,7 +1278,7 @@ if (auth == undefined) {
       });
     });
 
-    $("#confirmPayment").hide();
+    $("#confirmPayment").show().prop("disabled", true);
 
     $("#cardInfo").hide();
 
@@ -1374,7 +1298,8 @@ if (auth == undefined) {
     });
 
     $("#paymentModel").on("show.bs.modal", function () {
-      let requiresPrescription = cart.some(item => item.scheduleType === 'H' || item.scheduleType === 'H1');
+      let requiresPrescription = cart.some(item => isSchedulePrescription(item.scheduleType));
+      $("#confirmPayment").show().prop("disabled", true);
       if (requiresPrescription) {
         $("#prescriptionPanel").show();
         $("#prescriptionDate").val(moment().format("DD/MM/YYYY"));
@@ -1468,6 +1393,36 @@ if (auth == undefined) {
       });
     });
 
+    $("#saveBatch").submit(function (e) {
+      e.preventDefault();
+
+      let batchData = {
+        productId: $("#batch_product_id").val(),
+        batchNo: $("#batchNo").val(),
+        mfgDate: $("#mfgDate").val(),
+        expiryDate: $("#batchExpiryDate").val(),
+        quantity: $("#batchQuantity").val(),
+        purchasePrice: $("#purchasePrice").val()
+      };
+
+      $.ajax({
+        url: api + "inventory/batch",
+        type: "POST",
+        data: JSON.stringify(batchData),
+        contentType: "application/json",
+        success: function (response) {
+          $("#saveBatch").get(0).reset();
+          $("#receiveStockModal").modal("hide");
+          loadProducts();
+          notiflix.Notify.success("Stock received successfully!");
+        },
+        error: function (jqXHR) {
+          console.error(jqXHR.responseText);
+          notiflix.Notify.failure("Failed to receive stock");
+        }
+      });
+    });
+
     $("#saveCategory").submit(function (e) {
       e.preventDefault();
 
@@ -1506,6 +1461,19 @@ if (auth == undefined) {
         },
       });
     });
+
+    $.fn.receiveStock = function (index) {
+      $("#Products").modal("hide");
+      $("#saveBatch").get(0).reset();
+      $("#batch_product_id").val(allProducts[index]._id);
+      $("#batch_product_name").val(allProducts[index].name);
+      $("#batchNo").val("");
+      $("#batchQuantity").val("");
+      $("#mfgDate").val("");
+      $("#batchExpiryDate").val("");
+      $("#purchasePrice").val(allProducts[index].price);
+      $("#receiveStockModal").modal("show");
+    };
 
     $.fn.editProduct = function (index) {
       $("#Products").modal("hide");
@@ -1688,7 +1656,7 @@ if (auth == undefined) {
             login_status = state[0];
             login_time = state[1];
 
-            switch (login) {
+            switch (login_status) {
               case "Logged In":
                 class_name = "btn-default";
 
@@ -1802,6 +1770,7 @@ if (auth == undefined) {
           `"></td>
             <td><img style="max-height: 50px; max-width: 50px; border: 1px solid #ddd;" src="${product_img}" id="product_img"></td>
             <td>${product.name}
+            <br><small style="font-size: 10px; color: #555;">HSN: ${product.hsnCode || "N/A"}</small>
             <span style="display:none;">${product.hsnCode || ""} ${product.genericName || ""}</span>
             ${product.expiryAlert}</td>
             <td>${validator.unescape(settings.symbol)}${product.price}</td>
@@ -1812,9 +1781,9 @@ if (auth == undefined) {
             <td>${product.expirationDate}</td>
             <td>${category.length > 0 ? category[0].name : ""}</td>
             <td>${product.supplier || ""}</td>
-            <td class="nobr"><span class="btn-group"><button onClick="$(this).editProduct(${index})" class="btn btn-warning btn-sm"><i class="fa fa-edit"></i></button><button onClick="$(this).deleteProduct(${
+            <td class="nobr"><span class="btn-group"><button onClick="$(this).receiveStock(${index})" class="btn btn-success btn-sm" title="Receive Stock"><i class="fa fa-truck"></i></button><button onClick="$(this).editProduct(${index})" class="btn btn-warning btn-sm" title="Edit Product"><i class="fa fa-edit"></i></button><button onClick="$(this).deleteProduct(${
               product._id
-            })" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button></span></td></tr>`;
+            })" class="btn btn-danger btn-sm" title="Delete Product"><i class="fa fa-trash"></i></button></span></td></tr>`;
 
         if (counter == allProducts.length) {
           $("#product_list").html(product_list);
@@ -1824,7 +1793,7 @@ if (auth == undefined) {
             $("#" + product._id + "").JsBarcode(bcode, {
               width: 2,
               height: 25,
-              fontSize: 14,
+              fontSize: 18,
             });
           });
         }
@@ -2130,7 +2099,7 @@ if (auth == undefined) {
           .prop("selected", true);
       }
     });
- });
+  });
 
   $("#rmv_logo").on("click", function () {
     $("#remove_logo").val("1");

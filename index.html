@@ -9,9 +9,9 @@
 </head>
 
 <body>
-    <div class="splash loading">
-        <img src="assets/images/logo.svg" />
-        <h1 class="pull-right pt-3"><i class="fa fa-spinner fa-spin"></i> Please wait...</h1>
+    <div class="splash loading" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;">
+        <img src="assets/images/logo.svg" style="max-width: 150px; margin-bottom: 20px;" />
+        <h4><i class="fa fa-spinner fa-spin"></i> Please wait...</h4>
     </div>
     <div id="login">
         <div class="login-box">
@@ -382,7 +382,7 @@
                                 <br>
                                 <div class="input-group">
                                     <span class="input-group-addon" id="basic-addon3">Payment <span id="payment_curr"></span> </span>
-                                    <input type="text" placeholder="0.0" class="form-control" id="paymentText" aria-describedby="basic-addon3" readonly>
+                                    <input type="text" placeholder="0.0" class="form-control" id="paymentText" aria-describedby="basic-addon3">
                                     <input type="hidden" class="form-control" id="payment" aria-describedby="basic-addon3">
                                 </div>
                                 <div id="prescriptionPanel" style="display: none; border: 1px solid #ffcc00; background-color: #fff9e6; padding: 15px; margin: 15px 0; border-radius: 4px;">
@@ -664,6 +664,60 @@
                 </div>
             </div>
         </div>
+        <div id="receiveStockModal" class="modal fade bs-example-modal-md" tabindex="-1" role="dialog" aria-labelledby="myMediumModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-md">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h4 class="modal-title">Receive Stock</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div style="padding: 0 15px;">
+                            <form id="saveBatch">
+                                <input type="hidden" name="productId" id="batch_product_id">
+                                <div class="form-group">
+                                    <label>Product Name</label>
+                                    <input type="text" class="form-control" id="batch_product_name" readonly>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="batchNo">Batch Number</label>
+                                            <input type="text" required="required" name="batchNo" placeholder="Enter batch number" class="form-control" id="batchNo">
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="batchQuantity">Quantity</label>
+                                            <input type="number" required="required" name="quantity" placeholder="Quantity received" class="form-control" id="batchQuantity" min="1">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="mfgDate">Manufacturing Date</label>
+                                            <input type="text" name="mfgDate" placeholder="dd-MMM-yyyy" class="form-control" id="mfgDate">
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="batchExpiryDate">Expiry Date</label>
+                                            <input type="text" required="required" name="expiryDate" placeholder="dd-MMM-yyyy" class="form-control" id="batchExpiryDate">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="purchasePrice">Purchase Price</label>
+                                    <input type="text" name="purchasePrice" placeholder="Purchase Price" class="form-control number-input" id="purchasePrice">
+                                </div>
+                                <input type="submit" id="submitBatch" class="btn btn-success btn-block waves-effect waves-light" style="margin-top: 15px;">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div id="newCategory" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-md">
                 <div class="modal-content">
@@ -866,8 +920,8 @@
                 </div>
             </div>
         </div>
-        <div id="orderModal" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-sm">
+        <div id="orderModal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button class="btn btn-sm btn-success" onclick="$(this).print()">Print</button> <br> <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>

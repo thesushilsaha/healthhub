@@ -133,16 +133,19 @@ router.get("/products", function (req, res) {
                 return res.send(products);
             }
             
-            // Group active batches by productId
+            // Group active batches by productId (handling string/number keys)
             let batchesByProduct = {};
+            let productHasBatches = {};
             allBatches.forEach(b => {
+                let pid = b.productId;
+                productHasBatches[pid] = true;
                 if (b.quantity > 0) {
-                    if (!batchesByProduct[b.productId]) {
-                        batchesByProduct[b.productId] = [];
+                    if (!batchesByProduct[pid]) {
+                        batchesByProduct[pid] = [];
                     }
                     // Pre-calculate timestamp to avoid repeated parsing in sort
                     b.expiryTimestamp = moment(b.expiryDate, "DD-MMM-YYYY").valueOf();
-                    batchesByProduct[b.productId].push(b);
+                    batchesByProduct[pid].push(b);
                 }
             });
 
@@ -153,8 +156,10 @@ router.get("/products", function (req, res) {
                     // Sort using pre-calculated timestamp
                     activeBatches.sort((a, b) => Math.sign(a.expiryTimestamp - b.expiryTimestamp));
                     product.expirationDate = activeBatches[0].expiryDate;
-                } else {
+                } else if (productHasBatches[product._id]) {
                     product.quantity = 0;
+                } else {
+                    product.quantity = parseInt(product.quantity || 0);
                 }
             });
 
@@ -358,6 +363,28 @@ router.post("/product/sku", function (req, res) {
 });
 
 /**
+ * POST endpoint: Add a new batch to a product
+ */
+router.post("/batch", function(req, res) {
+    let batch = {
+        productId: parseInt(validator.escape(req.body.productId)),
+        batchNo: validator.escape(req.body.batchNo),
+        mfgDate: validator.escape(req.body.mfgDate || ""),
+        expiryDate: validator.escape(req.body.expiryDate),
+        quantity: parseInt(validator.escape(req.body.quantity)),
+        purchasePrice: validator.escape(req.body.purchasePrice)
+    };
+
+    batchesDB.insert(batch, function(err, insertedBatch) {
+        if (err) {
+            console.error(err);
+            return res.status(500).send(err);
+        }
+        res.sendStatus(200);
+    });
+});
+
+/**
  * Decrement inventory quantities based on a list of products in a transaction.
  *
  * @param {Array} products - List of products in the transaction.
@@ -374,11 +401,18 @@ router.decrementInventory = function (products) {
 
                 let remainingToDeduct = parseInt(transactionProduct.quantity);
 
-                // Fetch batches sorted by expiryDate ascending (FEFO)
-                batchesDB.find({ productId: product._id }).sort({ expiryDate: 1 }).exec(function (bErr, batches) {
+                // Fetch batches and sort them in memory using moment (FEFO)
+                batchesDB.find({ productId: product._id }, function (bErr, batches) {
                     if (bErr || !batches || batches.length === 0) {
                         return callback();
                     }
+
+                    // Sort batches by expiry date (earliest first)
+                    batches.sort((a, b) => {
+                        let dateA = moment(a.expiryDate, "DD-MMM-YYYY");
+                        let dateB = moment(b.expiryDate, "DD-MMM-YYYY");
+                        return dateA.diff(dateB);
+                    });
 
                     async.eachSeries(batches, function (batch, batchCallback) {
                         if (remainingToDeduct <= 0 || batch.quantity <= 0) {

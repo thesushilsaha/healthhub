@@ -33,17 +33,33 @@ $(document).ready(function () {
    * Calculate and display the balance due.
    */
   $.fn.calculateChange = function () {
-    var payablePrice = $("#payablePrice").val().replace(",", "");
-    var payment = $("#payment").val().replace(",", "");
+    var payablePriceStr = ($("#payablePrice").val() || "").replace(/,/g, "");
+    var paymentStr = ($("#payment").val() || "").replace(/,/g, "");
+    var payablePrice = parseFloat(payablePriceStr) || 0;
+    var payment = parseFloat(paymentStr) || 0;
     var change = payablePrice - payment;
+
+    // Always keep confirmPayment visible, enable as soon as at least 1 digit (>0) is entered
+    $("#confirmPayment").show();
+    if (paymentStr.trim().length > 0 && !isNaN(payment) && payment > 0) {
+      $("#confirmPayment").prop("disabled", false);
+    } else {
+      $("#confirmPayment").prop("disabled", true);
+    }
+
     if (change <= 0) {
       $("#change").text(utils.moneyFormat(Math.abs(change.toFixed(2))));
-      $("#confirmPayment").show();
     } else {
       $("#change").text("0");
-      $("#confirmPayment").hide();
     }
   };
+
+  // Support direct physical keyboard input on paymentText
+  $(document).on("input keyup change", "#paymentText", function () {
+    let rawVal = $(this).val().replace(/[^0-9.]/g, "");
+    $("#payment").val(rawVal);
+    $(this).calculateChange();
+  });
 
   var $keypadBtn = $(".keypad-btn").on("click", function () {
     const key = $(this).data("val");

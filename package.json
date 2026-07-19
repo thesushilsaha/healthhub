@@ -3,14 +3,14 @@
   "productName": "HealthHub",
   "version": "1.5.3",
   "description": "Easy Point of Sale for Pharmacies",
-  "author": "Patterns Digital Limited",
-  "website": "https://patternsdigital.com/healthhub",
+  "author": "Sushil Saha",
+  "website": "https://github.com/thesushilsaha/healthhub",
   "credits": "electronjs.org",
   "license": "MIT",
   "private": true,
   "main": "start.js",
   "build": {
-    "appId": "com.patternsdigital.healthhub",
+    "appId": "com.sushilsaha.healthhub",
     "directories": {
       "buildResources": "assets"
     }
